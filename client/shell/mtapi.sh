@@ -7,30 +7,18 @@ if [ -e "mtapi.conf" ]; then
     . mtapi.conf
 fi
 
-if [ -z "$API_KEY" ]; then
-    API_KEY=""
-fi
+# set defaults
+API_BASE_URL=${API_BASE_URL:="https://api.mediatemple.net/api/v1"}
+API_KEY=${API_KEY:=""}
+API_PRETTY_PRINT=${API_PRETTY_PRINT:="true"}
+API_WRAP_ROOT=${API_WRAP_ROOT:="true"}
+API_FORMAT=${API_FORMAT:="json"}
 
-if [ -z "$API_PRETTY_PRINT" ]; then
-    API_PRETTY_PRINT="true"
-fi
-
-if [ -z "$API_WRAP_ROOT" ]; then
-    API_WRAP_ROOT="true"
-fi
-
-if [ -z "$API_FORMAT" ]; then
-    API_FORMAT="json"
-fi
-
+# determine content type
 if [ "$API_FORMAT" == "xml" ]; then
     CONTENT_TYPE="application/xml"
 else
     CONTENT_TYPE="application/json"
-fi
-
-if [ -z "$API_BASE_URL" ]; then
-    API_BASE_URL="https://api.mediatemple.net/api/v1"
 fi
 
 SERVICE_IDS_URI="/services/ids"
