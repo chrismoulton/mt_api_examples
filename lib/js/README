@@ -1,0 +1,21 @@
+Copyright 2010, MediaTemple, Inc.
+
+This JavaScript Client can be used to integrate with the (mt) Public API.
+This package includes example usages (mtapi.html) and a jquery plugin
+(jquery.dump.js) for dumping javascript objects to json.
+
+There are restrictions that prevent using this library from a domain other than
+api.mediatemple.net, which may require some form of javascript proxy to get
+around browser security issues.  See the following URL for more information on
+solutions to this problem:
+
+    http://www.simple-talk.com/dotnet/asp.net/calling-cross-domain-web-services-in-ajax/
+
+However, more recent browsers which support Cross Origin Requests
+(http://www.w3.org/TR/cors/), will be able to access the API without need for a
+proxy.
+
+To see the JavaScript client examples, open mtapi.html with a browser.  Set the
+global DEBUG variable to true if you'd like to see console log messages
+printed.  
+

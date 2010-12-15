@@ -1,0 +1,87 @@
+<html>
+<body>
+<form name="myform">
+<table>
+<tr>
+    <td>Base URL (required):</td><td><input style="width: 300;" type="text" id="baseurl" name="baseurl" value=""></td>
+</tr>
+<tr>
+    <td>API Key (required):</td><td><input style="width: 300;" type="text" id="apikey" name="apikey" value=""></td>
+</tr>
+<tr>
+    <td>Service ID:</td><td><input id="serviceId" type="text" value=""></td>
+</tr>
+</table>
+<br>
+<b>Services:</b><br>
+<a href="javascript:void(0)" onclick="mtapi.getServiceIds(function(json) {printResult(json)}, function(error) {printResult(error)})">Get Service IDs</a><br>
+<a href="javascript:void(0)" onclick="mtapi.getServices(function(json) {printResult(json)}, function(error) {printResult(error)})">Get all Service Info</a><br>
+<a href="javascript:void(0)" onclick="mtapi.getService($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult(error)})">Get Service Info</a> *<br>
+<br>
+<b>Service Controls:</b><br>
+<a href="javascript:void(0)" onclick="mtapi.rebootService($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Reboot Service</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.addTempDiskSpace($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Add Temp Disk Space</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.flushFirewall($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Flush Firewall</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.setRootPassword($('#serviceId').val(), $('#rootPassword').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Set Root Password</a> *&nbsp;&nbsp;&nbsp; <input id="rootPassword" type="text" value=""><br>
+<a href="javascript:void(0)" onclick="mtapi.setPleskPassword($('#serviceId').val(), $('#pleskPassword').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Set Plesk Password</a> *&nbsp;&nbsp;&nbsp; <input id="pleskPassword" type="text" value=""><br>
+<br>
+<b>Stats:</b><br>
+<a href="javascript:void(0)" onclick="mtapi.getCurrentStats($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get Current Stats</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.getRangeStats($('#serviceId').val(), $('#rangeStart').val(), $('#rangeEnd').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get Range Stats</a> *&nbsp;&nbsp;&nbsp; <input id="rangeStart" type="text" value=""> - <input id="rangeEnd" type="text" value=""><br>
+<a href="javascript:void(0)" onclick="mtapi.get5MinStats($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get 5 Minute Stats</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.get15MinStats($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get 15 Minute Stats</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.get30MinStats($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get 30 Minute Stats</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.get1HourStats($('#serviceId').val(), function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get 1 Hour Stats</a> *<br>
+<a href="javascript:void(0)" onclick="mtapi.getWarnings(function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get Warnings</a><br>
+<a href="javascript:void(0)" onclick="mtapi.getWarningThresholds(function(json) {printResult(json)}, function(error) {printResult('Error: ' + error)})">Get Warning Thresholds</a><br>
+<p>* - method requires service id</p>
+<textarea id="result" name="result" cols=100 rows=20>
+</textarea>
+</form>
+
+<script type="text/javascript" src="mtapi.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="jquery.dump.js"></script>
+<script type="text/javascript">
+DEBUG = true;
+mtPrettyPrint = true;
+$(document).ready(function(){
+    var now = Math.floor(new Date().getTime() / 1000);
+    $("#rangeStart").val(now - 60);
+    $("#rangeEnd").val(now);
+
+    //var baseurl = location.protocol+"//"+location.host;
+    var baseurl = "https://api.mediatemple.net";
+    var apikey = $( "#apikey" ).val();
+
+    var apikeyField = $( "#apikey" );
+    apikeyField.change(
+        function( objEvent ){
+            apikey = $(this).val();
+            console.log("MTAPI(): got new key "+apikey);
+            mtapi = new MTAPI(baseurl, apikey);
+        }
+    );
+
+    var baseurlField = $( "#baseurl" );
+    baseurlField.change(
+        function( objEvent ){
+            baseurl = $(this).val();
+            console.log("MTAPI(): got new baseurl "+baseurl);
+            mtapi = new MTAPI(baseurl, apikey);
+        }
+    );
+
+    // initialize the base url
+    baseurlField.val(baseurl);
+    mtapi = new MTAPI(baseurl, apikey);
+
+});
+
+function printResult(obj) {
+    $("#result").text($.dump(obj));
+}
+</script>
+
+</body>
+</html>

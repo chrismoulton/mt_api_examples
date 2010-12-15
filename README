@@ -1,0 +1,13 @@
+Copyright 2010, MediaTemple, Inc.
+
+This package contains multiple client libraries for accessing the Media Temple Public API.
+
+Directory Layout
+
+* lib - libraries for integrating with the API in your own software
+  * js - a JavaScript client library with HTML harness that uses it
+
+client - clients for users to interact with the API
+  * shell - a shell script client that uses curl to interact with the (mt) Public API
+
+
