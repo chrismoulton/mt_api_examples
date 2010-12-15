@@ -17,5 +17,5 @@ proxy.
 
 To see the JavaScript client examples, open mtapi.html with a browser.  Set the
 global DEBUG variable to true if you'd like to see console log messages
-printed.  
+printed in Chrome/FF.
 
