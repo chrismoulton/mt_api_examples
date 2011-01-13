@@ -23,6 +23,7 @@ fi
 
 SERVICE_IDS_URI="/services/ids"
 SERVICE_INFO_URI="/services"
+ADD_SERVICE_URI="/services"
 ALL_SERVICE_INFO_URI="/services"
 SERVICE_STATS_URI="/stats"
 WARNINGS_URI="/stats/warnings"
@@ -34,16 +35,18 @@ SET_ROOT_PASS_URI="/services/serviceId/rootPassword"
 
 function usage() {
     echo "usage: mtapi.sh <command> [<params>]*"
-    echo "== Service Commands =="
+    echo "== Service List Commands =="
     echo "  services            : get the service info for all services"
     echo "  serviceIds          : get a list of all service ids"
     echo "  service <serviceId> : get the service info for a single service"
+    echo "  serviceTypes        : get a list of valid service types"
     echo ""
     echo "== Service Admin Commands =="
-    echo "  reboot <serviceId>             : reboot the specified service"
-    echo "  flushFirewall <serviceId>      : flushes the firewall for the specified service"
-    echo "  addTempDisk <serviceId>        : adds temporary disk space for the specified service"
-    echo "  setRootPass <serviceId> <pass> : set root password for the specified service"
+    echo "  addService <serviceType> <domain> : get the service info for a single service"
+    echo "  reboot <serviceId>                : reboot the specified service"
+    echo "  flushFirewall <serviceId>         : flushes the firewall for the specified service"
+    echo "  addTempDisk <serviceId>           : adds temporary disk space for the specified service"
+    echo "  setRootPass <serviceId> <pass>    : set root password for the specified service"
     echo ""
     echo "== Stats Commands =="
     echo "  stats <serviceId> : get the stats for a single service"
@@ -79,13 +82,18 @@ function my_curl() {
 
 function my_curl_post() {
     URI=""
+    DATA=""
     if [ -n "$1" ]; then
         URI="$1"
     fi
 
-    echo "curl -D log.txt -X POST -H \"Content-type: $CONTENT_TYPE\" $AUTH_PARAMS \"$URI\""
+    if [ -n "$2" ]; then
+        DATA="$2"
+    fi
+
+    echo "curl -D log.txt -X POST --data '$DATA' -H \"Content-type: $CONTENT_TYPE\" $AUTH_PARAMS \"$URI\""
     if [ -z "$TEST_ONLY" ]; then
-        eval "curl -D log.txt -X POST -H \"Content-type: $CONTENT_TYPE\" $AUTH_PARAMS \"$URI\""
+        eval "curl -D log.txt -X POST --data '$DATA' -H \"Content-type: $CONTENT_TYPE\" $AUTH_PARAMS \"$URI\""
     fi
 }
 
@@ -157,6 +165,12 @@ elif [[ ("$1" == "stats") && (-n "$2") ]]; then
     fi
 
     my_curl "$API_BASE_URL$SERVICE_STATS_URI/$2$EXTRA?$API_PARAMS"
+elif [ "$1" == "addService" ]; then
+    if [ "$API_FORMAT" == "xml" ]; then
+        my_curl_post "$API_BASE_URL$ADD_SERVICE_URI?$API_PARAMS" "<service><serviceType>$2</serviceType><primaryDomain>$3</primaryDomain></service>"
+    else
+        my_curl_post "$API_BASE_URL$ADD_SERVICE_URI?$API_PARAMS" "{ \"serviceType\": $2, \"primaryDomain\": \"$3\"}"
+    fi
 elif [ "$1" == "warnings" ]; then
     my_curl "$API_BASE_URL$WARNINGS_URI?$API_PARAMS"
 elif [ "$1" == "thresholds" ]; then
