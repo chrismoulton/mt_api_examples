@@ -22,6 +22,7 @@ else
 fi
 
 SERVICE_IDS_URI="/services/ids"
+SERVICE_TYPES_URI="/services/types"
 SERVICE_INFO_URI="/services"
 ADD_SERVICE_URI="/services"
 ALL_SERVICE_INFO_URI="/services"
@@ -148,6 +149,8 @@ if [ "$1" == "services" ]; then
     my_curl "$API_BASE_URL$ALL_SERVICE_INFO_URI?$API_PARAMS"
 elif [ "$1" == "serviceIds" ]; then
     my_curl "$API_BASE_URL$SERVICE_IDS_URI?$API_PARAMS"
+elif [ "$1" == "serviceTypes" ]; then
+    my_curl "$API_BASE_URL$SERVICE_TYPES_URI?$API_PARAMS"
 elif [[ ("$1" == "service") && (-n "$2") ]]; then
     my_curl "$API_BASE_URL$SERVICE_INFO_URI/$2?$API_PARAMS"
 elif [[ ("$1" == "stats") && (-n "$2") ]]; then
