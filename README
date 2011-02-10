@@ -11,3 +11,8 @@ client - clients for users to interact with the API
   * shell - a shell script client that uses curl to interact with the (mt) Public API
 
 
+IMPORTANT
+
+There is a configuration file "mtapi.conf" that contains important configuration info that
+DOES need to be updated before the examples will work.
+(specifically, the API_KEY setting needs to be set)

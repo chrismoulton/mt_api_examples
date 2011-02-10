@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2010, MediaTemple, Inc.
+# Copyright 2010-2011, MediaTemple, Inc.
 
 # get options from mtapi.conf
 if [ -e "mtapi.conf" ]; then
@@ -23,6 +23,7 @@ fi
 
 SERVICE_IDS_URI="/services/ids"
 SERVICE_TYPES_URI="/services/types"
+SERVICE_OS_TYPES_URI="/services/types/os"
 SERVICE_INFO_URI="/services"
 ADD_SERVICE_URI="/services"
 ALL_SERVICE_INFO_URI="/services"
@@ -41,26 +42,27 @@ function usage() {
     echo "  serviceIds          : get a list of all service ids"
     echo "  service <serviceId> : get the service info for a single service"
     echo "  serviceTypes        : get a list of valid service types"
+    echo "  serviceOSTypes      : get a list of OS types that can be installed on a (ve)"
     echo ""
     echo "== Service Admin Commands =="
-    echo "  addService <serviceType> <domain> : get the service info for a single service"
-    echo "  reboot <serviceId>                : reboot the specified service"
-    echo "  flushFirewall <serviceId>         : flushes the firewall for the specified service"
-    echo "  addTempDisk <serviceId>           : adds temporary disk space for the specified service"
-    echo "  setRootPass <serviceId> <pass>    : set root password for the specified service"
+    echo "  addService <serviceType> <domain> [<osType>]: create a new service"
+    echo "  reboot <serviceId>                          : reboot the specified service"
+    echo "  flushFirewall <serviceId>                   : flushes the firewall for the specified service"
+    echo "  addTempDisk <serviceId>                     : adds temporary disk space for the specified service"
+    echo "  setRootPass <serviceId> <pass>              : set root password for the specified service"
     echo ""
     echo "== Stats Commands =="
-    echo "  stats <serviceId> : get the stats for a single service"
-    echo "                      optional: -s <start> -e <end>, -p <precision>, -r <resolution>, -d <predefined>"
-    echo "  warnings          : get the service warnings for an account"
-    echo "  thresholds        : get the service warning thresholds"
+    echo "  stats <serviceId>   : get the stats for a single service"
+    echo "                        optional: -s <start> -e <end>, -p <precision>, -r <resolution>, -d <predefined>"
+    echo "  warnings            : get the service warnings for an account"
+    echo "  thresholds          : get the service warning thresholds"
     echo ""
     echo "== Options =="
-    echo "  API_KEY          : the api key used to authenticate"
-    echo "  API_PRETTY_PRINT : true=pretty print (default: true)"
-    echo "  API_WRAP_ROOT    : true=wrap json object with root object name (default: true)"
-    echo "  API_FORMAT       : json=JSON data, xml=XML data (default: json)"
-    echo "  TEST_ONLY        : true=print out the curl, but don't execute it (default: false)"
+    echo "  API_KEY             : the api key used to authenticate"
+    echo "  API_PRETTY_PRINT    : true=pretty print, false=raw output (default: true)"
+    echo "  API_WRAP_ROOT       : true=wrap json object with root object name, false=no wrap (default: true)"
+    echo "  API_FORMAT          : json=JSON data, xml=XML data (default: json)"
+    echo "  TEST_ONLY           : true=print out the curl, but don't execute it (default: false)"
 
     if [ -n "$1" ]; then
         echo
@@ -151,6 +153,8 @@ elif [ "$1" == "serviceIds" ]; then
     my_curl "$API_BASE_URL$SERVICE_IDS_URI?$API_PARAMS"
 elif [ "$1" == "serviceTypes" ]; then
     my_curl "$API_BASE_URL$SERVICE_TYPES_URI?$API_PARAMS"
+elif [ "$1" == "serviceOSTypes" ]; then
+    my_curl "$API_BASE_URL$SERVICE_OS_TYPES_URI?$API_PARAMS"
 elif [[ ("$1" == "service") && (-n "$2") ]]; then
     my_curl "$API_BASE_URL$SERVICE_INFO_URI/$2?$API_PARAMS"
 elif [[ ("$1" == "stats") && (-n "$2") ]]; then
@@ -169,11 +173,23 @@ elif [[ ("$1" == "stats") && (-n "$2") ]]; then
 
     my_curl "$API_BASE_URL$SERVICE_STATS_URI/$2$EXTRA?$API_PARAMS"
 elif [ "$1" == "addService" ]; then
+    URI="$API_BASE_URL$ADD_SERVICE_URI?$API_PARAMS"
+
     if [ "$API_FORMAT" == "xml" ]; then
-        my_curl_post "$API_BASE_URL$ADD_SERVICE_URI?$API_PARAMS" "<service><serviceType>$2</serviceType><primaryDomain>$3</primaryDomain></service>"
+        PARAMS="<service><serviceType>$2</serviceType><primaryDomain>$3</primaryDomain>"
+        if [ -n "$4" ]; then
+            PARAMS="$PARAMS<operatingSystem>$4</operatingSystem>"
+        fi
+        PARAMS="$PARAMS</service>"
     else
-        my_curl_post "$API_BASE_URL$ADD_SERVICE_URI?$API_PARAMS" "{ \"serviceType\": $2, \"primaryDomain\": \"$3\"}"
+        PARAMS="{ \"serviceType\": $2, \"primaryDomain\": \"$3\""
+
+        if [ -n "$4" ]; then 
+            PARAMS="$PARAMS, \"operatingSystem\": \"$4\""
+        fi
+        PARAMS="$PARAMS}"
     fi
+    my_curl_post "$URI" "$PARAMS"
 elif [ "$1" == "warnings" ]; then
     my_curl "$API_BASE_URL$WARNINGS_URI?$API_PARAMS"
 elif [ "$1" == "thresholds" ]; then
