@@ -2,9 +2,10 @@
 <body>
 <form name="myform">
 <table>
+<!-- Only required for internal Mediatemple Testing
 <tr>
     <td>Base URL (required):</td><td><input style="width: 300;" type="text" id="baseurl" name="baseurl" value=""></td>
-</tr>
+</tr> -->
 <tr>
     <td>API Key (required):</td><td><input style="width: 300;" type="text" id="apikey" name="apikey" value=""></td>
 </tr>
@@ -51,7 +52,7 @@ $(document).ready(function(){
     $("#rangeEnd").val(now);
 
     //var baseurl = location.protocol+"//"+location.host;
-    var baseurl = "https://api.mediatemple.net";
+//    var baseurl = "https://api.mediatemple.net";
     var apikey = $( "#apikey" ).val();
 
     var apikeyField = $( "#apikey" );
@@ -59,10 +60,11 @@ $(document).ready(function(){
         function( objEvent ){
             apikey = $(this).val();
             console.log("MTAPI(): got new key "+apikey);
-            mtapi = new MTAPI(baseurl, apikey);
+            mtapi = new MTAPI(apikey);
         }
     );
-
+/*
+    // Only required for internal Mediatemple Testing
     var baseurlField = $( "#baseurl" );
     baseurlField.change(
         function( objEvent ){
@@ -73,9 +75,9 @@ $(document).ready(function(){
     );
 
     // initialize the base url
-    baseurlField.val(baseurl);
-    mtapi = new MTAPI(baseurl, apikey);
+    baseurlField.val(baseurl);*/
 
+    mtapi = new MTAPI(apikey);
 });
 
 function printResult(obj) {

@@ -19,3 +19,9 @@ To see the JavaScript client examples, open mtapi.html with a browser.  Set the
 global DEBUG variable to true if you'd like to see console log messages
 printed in Chrome/FF.
 
+Changes:
+V 0.1a Feb 25, 2011
+
+Changed MTAPI method to take only one param (apikey). The 'baseurl' param is now
+pre-set to the correct value.  There is a new member method 'setBaseUrl'
+that allows the value to be altered for internal MediaTemple testing.
