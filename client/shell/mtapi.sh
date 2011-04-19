@@ -33,6 +33,7 @@ WARNINGS_THRESHOLDS_URI="/stats/warnings/thresholds"
 REBOOT_URI="/services/serviceId/reboot"
 FLUSH_FIREWALL_URI="/services/serviceId/firewall/flush"
 ADD_TEMP_DISK_URI="/services/serviceId/disk/addTemp"
+SET_PLESK_PASS_URI="/services/serviceId/pleskPassword"
 SET_ROOT_PASS_URI="/services/serviceId/rootPassword"
 
 function usage() {
@@ -49,6 +50,7 @@ function usage() {
     echo "  reboot <serviceId>                          : reboot the specified service"
     echo "  flushFirewall <serviceId>                   : flushes the firewall for the specified service"
     echo "  addTempDisk <serviceId>                     : adds temporary disk space for the specified service"
+    echo "  pleskPassword <serviceId> <pass>            : set plesk password for the specified service"
     echo "  setRootPass <serviceId> <pass>              : set root password for the specified service"
     echo ""
     echo "== Stats Commands =="
@@ -203,6 +205,9 @@ elif [[ ("$1" == "flushFirewall") && (-n "$2") ]]; then
 elif [[ ("$1" == "addTempDisk") && (-n "$2") ]]; then
     URI=`echo -e ${ADD_TEMP_DISK_URI//serviceId/$2}`
     my_curl_post "$API_BASE_URL$URI?$API_PARAMS"
+elif [[ ("$1" == "pleskPassword") && (-n "$2") && (-n "$3")]]; then
+    URI=`echo -e ${SET_PLESK_PASS_URI//serviceId/$2}`
+    my_curl_put "$API_BASE_URL$URI?$API_PARAMS" "$3"
 elif [[ ("$1" == "setRootPass") && (-n "$2") && (-n "$3")]]; then
     URI=`echo -e ${SET_ROOT_PASS_URI//serviceId/$2}`
     my_curl_put "$API_BASE_URL$URI?$API_PARAMS" "$3"
