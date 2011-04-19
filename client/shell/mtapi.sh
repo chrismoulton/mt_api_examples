@@ -32,7 +32,7 @@ WARNINGS_URI="/stats/warnings"
 WARNINGS_THRESHOLDS_URI="/stats/warnings/thresholds"
 REBOOT_URI="/services/serviceId/reboot"
 FLUSH_FIREWALL_URI="/services/serviceId/firewall/flush"
-ADD_TEMP_DISK_URI="/services/serviceId/disk/addTemp"
+ADD_TEMP_DISK_URI="/services/serviceId/disk/temp"
 SET_PLESK_PASS_URI="/services/serviceId/pleskPassword"
 SET_ROOT_PASS_URI="/services/serviceId/rootPassword"
 
